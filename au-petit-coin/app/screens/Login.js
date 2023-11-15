@@ -16,7 +16,8 @@ const Login = ({ mode }) => {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
-      alert('Vous êtes connecté ! Bienvenue !');
+      console.log({email});
+      alert('Bienvenue, ' + email + ' !');
     } catch (error) {
       console.log(error);
       alert("La connexion a échoué : " + error.message);
