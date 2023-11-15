@@ -2,14 +2,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { StyleSheet, View, Image, Text, Platform, StatusBar, TouchableOpacity } from 'react-native';
-import Login from './app/screens/Login';
+import Login from './app/screens/Login'; // Make sure to provide the correct path to your Login component
+
+
 
 const Stack = createStackNavigator();
 
 export default function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
+
 
   const handleShowLogin = () => {
     setShowLogin(true);
@@ -19,11 +21,6 @@ export default function App() {
   const handleShowRegister = () => {
     setShowLogin(false);
     setShowRegister(true);
-  };
-
-  const toggleAuthMode = () => {
-    // Inversez le mode entre 'login' et 'signup'
-    setAuthMode(authMode === 'login' ? 'signup' : 'login');
   };
 
   return (
@@ -57,8 +54,8 @@ export default function App() {
                   </View>
                 )}
 
-                  {showLogin && <Login mode={authMode} toggleAuthMode={toggleAuthMode} />}
-                  {showRegister && <Register toggleAuthMode={toggleAuthMode} />}
+                {showLogin && <Login mode="login" />}
+                {showRegister && <Login mode="register" />}
               </View>
             </View>
           )}

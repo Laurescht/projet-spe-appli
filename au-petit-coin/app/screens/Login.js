@@ -4,12 +4,12 @@ import { auth } from '../../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native'; // Importez useNavigation depuis React Navigation
 
-const Login = ({ mode, toggleAuthMode }) => {
+const Login = ({ mode }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [authMode, setAuthMode] = useState('login');
-  const navigation = useNavigation();
+  const navigation = useNavigation();  // Initialisez le hook useNavigation ici
 
   const signIn = async () => {
     setLoading(true);
@@ -39,7 +39,7 @@ const Login = ({ mode, toggleAuthMode }) => {
   };
 
   const toggleAuthMode = () => {
-    setAuthMode(authMode === 'login' ? 'signup' : 'login');
+    setAuthMode((prevAuthMode) => (prevAuthMode === 'login' ? 'signup' : 'login'));
   };
 
   const navigateToHome = () => {
@@ -75,6 +75,8 @@ const Login = ({ mode, toggleAuthMode }) => {
     </View>
   );
 }
+
+export default Login;
 
 const styles = StyleSheet.create({
   container: {
@@ -125,5 +127,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default Login;
