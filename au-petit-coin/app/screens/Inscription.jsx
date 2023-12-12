@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity, Image } from 'react-native'
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import Fond from '../../assets/Fond.png';
 
 const Inscription = () => {
 
@@ -26,12 +27,16 @@ const Inscription = () => {
 
   return (
     <View style={{
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-        backgroundColor: "#219EBC",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
+      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      // backgroundColor: "#219EBC",
+    }}>
+      <Image source={Fond} style={styles.backgroundImage} resizeMode="cover" />
+
+      <View style={styles.overlayContainer}>
+
       <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
       <TextInput secureTextEntry={true} value={password} style={styles.input} placeholder="Password" autoCapitalize="none" onChangeText={(text) => setPassword(text)} />
         <TouchableOpacity style={[styles.button, styles.registerButton]} onPress={signUp}>
@@ -42,6 +47,7 @@ const Inscription = () => {
           Déjà inscrit ? Se connecter
         </Text>
       </TouchableOpacity>
+      </View>
     </View>
   )
 }
@@ -54,46 +60,28 @@ const styles = StyleSheet.create({
       // flex: 1,
       justifyContent: 'center',
     },
+    backgroundImage: {
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+      zIndex: -1,
+    },
     input: {
       marginTop: 10,
       marginVertical: 4,
       height: 50,
       borderRadius: 4,
       padding: 10,
-      backgroundColor: '#FFF',
-    },
-    loginButton: {
-      backgroundColor: '#ffffff',
-      borderRadius: 4,
-      width: 150,
-      height: 50,
-      marginTop: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    registerButton: {
-      backgroundColor: '#ffffff',
-      borderRadius: 4,
-      width: 150,
-      height: 50,
-      marginTop: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    switchButton: {
-      margin: 10,
-      alignItems: 'center',
-    },
-    switchButtonText: {
-      color: '#ffffff',
-      fontSize: 16,
+      backgroundColor: '#C4C4C4',
+      width: 300,
+      color: '#000000',
     },
     button: {
       justifyContent: 'center',
       alignItems: 'center',
     },
     buttonText: {
-      color: "#FFB703",
+      color: "#FFFFFF",
       fontWeight: 'bold',
     },
   
@@ -112,27 +100,18 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
       marginTop: 50,
-      flexDirection: 'row', // Aligner les boutons horizontalement
+      flexDirection: 'row',
     },
     logo: {
       width: 250,
       height: 150,
       resizeMode: 'contain',
     },
-    loginButton: {
-      backgroundColor: '#ffffff',
-      borderRadius: 15,
-      width: 150,
-      height: 70,
-      margin: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     registerButton: {
-      backgroundColor: '#ffffff',
-      borderRadius: 15,
-      width: 150,
-      height: 70,
+      backgroundColor: '#219EBC',
+      borderRadius: 50,
+      width: 250,
+      height: 50,
       margin: 10,
       justifyContent: 'center',
       alignItems: 'center',
@@ -142,15 +121,13 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     switchButtonText: {
-      color: '#ffffff',
+      color: '#000000',
       fontSize: 16,
+
+    overlayContainer: {
+      position: 'absolute',
+      bottom: 0,
+      zIndex: 1,
     },
-    button: {
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    buttonText: {
-      color: '#FFB703',
-      fontWeight: 'bold',
     },
   });
