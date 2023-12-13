@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { auth } from '../../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, StatusBar, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Fond from '../../assets/Fond.png';
+import { styles } from '../Styles/Connexion-InscriptionStyles'
 
 const Login = ({ mode }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [authMode, setAuthMode] = useState('login');
-  const navigation = useNavigation();  // Initialisez le hook useNavigation ici
+  const navigation = useNavigation();
 
   const signIn = async () => {
     setLoading(true);
@@ -17,7 +19,8 @@ const Login = ({ mode }) => {
       const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
       console.log({email});
-      alert('Bienvenue, ' + email + ' !');
+  
+      navigation.navigate('Search', { email });
     } catch (error) {
       console.log(error);
       alert("La connexion a échoué : " + error.message);
@@ -32,6 +35,8 @@ const Login = ({ mode }) => {
       const response = await createUserWithEmailAndPassword(auth, email, password);
       console.log(response);
       alert('Consultez vos mails !');
+  
+      navigation.navigate('Search', { email });
     } catch (error) {
       console.log(error);
       alert("L'inscription a échoué : " + error.message);
@@ -49,141 +54,53 @@ const Login = ({ mode }) => {
     navigation.navigate('Home');
   };
 
-  return (
-    <View style={{
-      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      backgroundColor: "#219EBC",
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    }}>
-      <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
-      <TextInput secureTextEntry={true} value={password} style={styles.input} placeholder="Password" autoCapitalize="none" onChangeText={(text) => setPassword(text)} />
+return (
+  <SafeAreaView style={styles.safeArea}>
+    <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+      <View style={styles.topContainer}>
+        <Image source={Fond} style={styles.backgroundImage} resizeMode="cover" />
+        <View style={styles.logoContainer}>
+          <Image source={require("../../assets/Logo-Poopy.png")} style={styles.logo} />
+          <Text style={styles.logoText}>Au p'tit coin</Text>
+        </View>
+      </View>
 
-      {loading ? (
-        <ActivityIndicator size="large" color='#0000FF' />
-      ) : (
-        <>
-            <TouchableOpacity style={[styles.button, styles.loginButton]} onPress={signIn}>
-              <Text style={styles.buttonText}>Connexion</Text>
-            </TouchableOpacity>
-        </>
-      )}
-
-      <TouchableOpacity style={styles.switchButton} onPress={() => navigation.navigate('Inscription')}>
-        <Text style={styles.switchButtonText}>
-          Pas encore inscrit ? S'inscrire
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
+      <View style={styles.bottomContainer}>
+        <View style={styles.textContainer}>
+          <Text style={styles.titleText}>
+            <Text style={styles.yellowText}>Je</Text>{'\n'}me connecte !
+          </Text>
+        </View>
+        <TextInput
+          value={email}
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#000000"
+          autoCapitalize="none"
+          onChangeText={(text) => setEmail(text)}
+        />
+        <TextInput
+          secureTextEntry={true}
+          value={password}
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#000000"
+          autoCapitalize="none"
+          onChangeText={(text) => setPassword(text)}
+        />
+        <TouchableOpacity style={[styles.button, styles.registerButton]} onPress={signIn}>
+          <Text style={styles.buttonText}>Connexion</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.switchButton} onPress={() => navigation.navigate('Inscription')}>
+          <Text style={styles.switchButtonText}>Pas encore inscrit ? S'inscrire</Text>
+        </TouchableOpacity>
+      </View>
+      </KeyboardAvoidingView>
+  </SafeAreaView>
+);
+};
 
 export default Login;
-
-const styles = StyleSheet.create({
-  // container: {
-  //   marginHorizontal: 20,
-  //   // flex: 1,
-  //   justifyContent: 'center',
-  // },
-  // input: {
-  //   marginTop: 10,
-  //   marginVertical: 4,
-  //   height: 50,
-  //   borderRadius: 4,
-  //   padding: 10,
-  //   backgroundColor: '#FFF',
-  // },
-  // loginButton: {
-  //   backgroundColor: '#ffffff',
-  //   borderRadius: 4,
-  //   width: 150,
-  //   height: 50,
-  //   marginTop: 10,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // registerButton: {
-  //   backgroundColor: '#ffffff',
-  //   borderRadius: 4,
-  //   width: 150,
-  //   height: 50,
-  //   marginTop: 10,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // switchButton: {
-  //   margin: 10,
-  //   alignItems: 'center',
-  // },
-  // switchButtonText: {
-  //   color: '#ffffff',
-  //   fontSize: 16,
-  // },
-  // button: {
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // buttonText: {
-  //   color: "#FFB703",
-  //   fontWeight: 'bold',
-  // },
-
-  container: {
-    alignItems: 'center',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  logoText: {
-    color: '#FFB703',
-    marginTop: 10,
-    fontSize: 40,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    marginTop: 50,
-    flexDirection: 'row', // Aligner les boutons horizontalement
-  },
-  logo: {
-    width: 250,
-    height: 150,
-    resizeMode: 'contain',
-  },
-  loginButton: {
-    backgroundColor: '#ffffff',
-    borderRadius: 15,
-    width: 150,
-    height: 70,
-    margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  registerButton: {
-    backgroundColor: '#ffffff',
-    borderRadius: 15,
-    width: 150,
-    height: 70,
-    margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  switchButton: {
-    margin: 10,
-    alignItems: 'center',
-  },
-  switchButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-  },
-  button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFB703',
-    fontWeight: 'bold',
-  },
-});
