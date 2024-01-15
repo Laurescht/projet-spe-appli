@@ -84,7 +84,7 @@ const Search = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : ''} style={{ flex: 1 }}>
         <View style={styles.topContainer}>
           <Image source={Fond} style={styles.backgroundImage} resizeMode="cover" />
           <View style={styles.logoContainer}>

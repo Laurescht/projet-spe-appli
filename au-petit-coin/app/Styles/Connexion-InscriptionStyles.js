@@ -1,11 +1,12 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, StatusBar } from 'react-native';
 
 export const styles = StyleSheet.create({
     container: {
       backgroundColor: '#FFFFFF',
     },
     safeArea: {
-      flexGrow: 1,
+      flex: 1,
+      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     topContainer: {
       flex: 1,
@@ -16,11 +17,12 @@ export const styles = StyleSheet.create({
     },
     backgroundImage: {
       position: 'absolute',
-      zIndex: -1,
+      width: '100%'
     },
     logoContainer: {
       alignItems: 'center',
       marginBottom: 20,
+      zIndex: 1,
     },
     logoText: {
       color: '#FFB703',
@@ -39,7 +41,6 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
       position: 'relative',
       paddingHorizontal: 30,
-      zIndex: -1,
     },
     textContainer: {
       alignSelf: 'flex-start',

@@ -1,10 +1,24 @@
 import { auth } from '../../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, StatusBar, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StatusBar,
+  Platform,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Keyboard,
+  Animated,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Fond from '../../assets/Fond.png';
-import { styles } from '../Styles/Connexion-InscriptionStyles'
+import { styles } from '../Styles/Connexion-InscriptionStyles';
+// import {BlurView} from "@react-native-community/blur";
 
 const Login = ({ mode }) => {
   const [email, setEmail] = useState('');
@@ -12,6 +26,29 @@ const Login = ({ mode }) => {
   const [loading, setLoading] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const navigation = useNavigation();
+  const [isKeyboardOpen, setKeyboardOpen] = useState(false);
+
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardOpen(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardOpen(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   const signIn = async () => {
     setLoading(true);
@@ -56,19 +93,24 @@ const Login = ({ mode }) => {
 
 return (
   <SafeAreaView style={styles.safeArea}>
-    <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
-      <View style={styles.topContainer}>
-        <Image source={Fond} style={styles.backgroundImage} resizeMode="cover" />
-        <View style={styles.logoContainer}>
-          <Image source={require("../../assets/Logo-Poopy.png")} style={styles.logo} />
-          <Text style={styles.logoText}>Au p'tit coin</Text>
-        </View>
+  <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : ''} style={{ flex: 1 }}>
+    <View style={styles.topContainer}>
+      <Image source={Fond} style={styles.backgroundImage} resizeMode="cover" />
+      {/* {isKeyboardOpen && (
+          <BlurView
+            style={StyleSheet.absoluteFill}
+            blurType="light"
+            blurAmount={10}
+            reducedTransparencyFallbackColor="white"
+          />
+        )} */}
+      <View style={styles.logoContainer}>
+        <Image source={require('../../assets/Logo-Poopy.png')} style={styles.logo} />
+        <Text style={styles.logoText}>Au p'tit coin</Text>
       </View>
+    </View>
 
-      <View style={styles.bottomContainer}>
+    <View style={styles.bottomContainer}>
         <View style={styles.textContainer}>
           <Text style={styles.titleText}>
             <Text style={styles.yellowText}>Je</Text>{'\n'}me connecte !
