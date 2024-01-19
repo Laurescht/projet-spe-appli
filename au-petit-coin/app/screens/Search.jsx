@@ -21,44 +21,49 @@ const Search = () => {
   
     const handleSeeOnMap = () => {
       console.log('Voir sur la carte');
+      console.log('markers: ', markers);
+      console.log('region: ', region);
       navigation.navigate('MapScreen', { markers, region });
     };
 
-    const handleSearch = useDebouncedCallback(() => {
+    const handleSearch = useDebouncedCallback(async () => {
       const apiKey = 'AIzaSyCcLJm1mrqbjI_JSyVE2x9P2xc_PilTEc0';
       const geocodeEndpoint = `https://maps.googleapis.com/maps/api/geocode/json?address=${searchTerm}&key=${apiKey}`;
     
       console.log('Geocode Endpoint:', geocodeEndpoint);
     
-      fetch(geocodeEndpoint)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('Geocoding Data:', data);
-          if (data.status === 'OK' && data.results && data.results.length > 0) {
-            const location = data.results[0].geometry.location;
-            console.log('Location:', location);
-            const newMarkers = [
-              {
-                latitude: location.lat,
-                longitude: location.lng,
-                title: searchTerm,
-                description: 'Searched Location',
-              },
-            ];
-            setMarkers(newMarkers);
-            setRegion({
+      try {
+        const response = await fetch(geocodeEndpoint);
+    
+        if (!response.ok) {
+          throw new Error(`Geocoding failed with status: ${response.status}`);
+        }
+    
+        const data = await response.json();
+    
+        console.log('Geocoding Data:', data);
+    
+        if (data.status === 'OK' && data.results && data.results.length > 0) {
+          const location = data.results[0].geometry.location;
+          console.log('Location:', location);
+    
+          const newMarkers = [
+            {
               latitude: location.lat,
               longitude: location.lng,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            });
-          } else {
-            console.error('Geocoding failed:', data.status);
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching geocoding data:', error);
-        });
+              title: searchTerm,
+              description: 'Searched Location',
+            },
+          ];
+    
+          setMarkers(newMarkers);
+    
+        } else {
+          console.error('Geocoding failed:', data.status);
+        }
+      } catch (error) {
+        console.error('Error fetching geocoding data:', error);
+      }
     }, 100);
 
   const handleChangeLanguage = () => {
@@ -78,6 +83,7 @@ const Search = () => {
         longitudeDelta: 0.0421,
       };
       setRegion(newRegion);
+      handleSeeOnMap();
     }
   }, [markers]);
 
@@ -113,9 +119,9 @@ const Search = () => {
             autoCapitalize="none"
             onChangeText={(text) => setSearchTerm(text)}
           />
-<TouchableOpacity style={[styles.button, styles.registerButton]} onPress={() => { handleSearch(); handleSeeOnMap(); }}>
-  <Text style={styles.buttonText}>Voir sur la carte</Text>
-</TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.registerButton]} onPress={handleSearch}>
+          <Text style={styles.buttonText}>Voir sur la carte</Text>
+        </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

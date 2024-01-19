@@ -4,6 +4,10 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import { useRoute } from '@react-navigation/native';
 import { getDirections } from 'react-native-maps-directions';
 import { useNavigation } from '@react-navigation/native';
+import { getFirestore, collection, getDocs } from '@firebase/firestore';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import ListToilet from './ListToilet';
+
 
 const MapScreen = ({ navigation }) => {
   const search = () => {
@@ -15,6 +19,7 @@ const MapScreen = ({ navigation }) => {
 
   const [directions, setDirections] = useState([]);
   const [mapRegion, setMapRegion] = useState(null);
+  const [toiletData, setToiletData] = useState([]);
 
   useEffect(() => {
     console.log("Markers:", markers);
@@ -55,6 +60,37 @@ const MapScreen = ({ navigation }) => {
     }
   }, [markers]);
   
+    useEffect(() => {
+      // Récupérer les données depuis Firebase
+      const fetchToiletData = async () => {
+        try{
+          const db = getFirestore();
+        // const toiletCollection = db.collection('toilettes');
+
+        const snapshot = await getDocs(collection(db, 'toilettes'));
+        const data = snapshot.docs.map((doc) => doc.data());
+  
+        // const toilets = snapshot.docs.map(doc => ({
+        //   id: doc.id,
+        //   ...doc.data(),
+        // }));
+  
+        setToiletData(data);
+        console.log(snapshot);
+        } catch(error){
+          console.error('Erreur: ', error);
+          throw error;
+        }
+        
+      };
+  
+      fetchToiletData();
+    }, []);
+
+    const retour = () => {
+      console.log('retour');
+    };
+  
   
 
   return (
@@ -65,6 +101,20 @@ const MapScreen = ({ navigation }) => {
           provider={MapView.PROVIDER_GOOGLE}
           region={mapRegion}
         >
+
+          {toiletData.map(toilet => (
+            <Marker
+              key={toilet.id}
+              coordinate={{
+                latitude: toilet.latitude,
+                longitude: toilet.longitude,
+              }}
+              title={toilet.name}
+              description={toilet.description}
+              pinColor="#219EBC"
+            />
+          ))}
+
           {markers.map((marker, index) => (
             <Marker
               key={index}
@@ -85,9 +135,12 @@ const MapScreen = ({ navigation }) => {
       {!directions && (
         <Text style={styles.loadingText}>Chargement des directions...</Text>
       )}
-      <TouchableOpacity style={styles.Button} onPress={search}>
-        <Text style={styles.ButtonText}>Retour</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.retourIconContainer} onPress={search}>
+            <Icon name={"arrowleft"} size={30} color="#219EBC" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.listeBtn} onPress={() => navigation.navigate('ListToilet', {toiletData: toiletData})}>
+            <Text style={styles.ButtonList}>Voir en liste</Text>
+          </TouchableOpacity>
     </View>
   );
       };  
@@ -99,14 +152,25 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  Button: {
-    backgroundColor: '#FF5733',
+  listeBtn: {
+    backgroundColor: '#219EBC',
     padding: 10,
     borderRadius: 5,
+    position: 'absolute',
+    top: 70,
+    left: '50%',
+    display: 'flex',
+    marginLeft: -120 / 2,
   },
-  ButtonText: {
+  ButtonList: {
     color: '#FFFFFF',
     fontWeight: 'bold',
+    width: 100,
+  },
+  retourIconContainer: {
+    position: 'absolute',
+    top: 30,
+    left: 30,
   },
 });
 

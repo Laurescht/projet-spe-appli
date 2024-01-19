@@ -8,6 +8,7 @@ import Inscription from './app/screens/Inscription';
 import Profil from './app/screens/Profil';
 import Search from './app/screens/Search';
 import MapScreen from './app/screens/MapScreen';
+import ListToilet from './app/screens/ListToilet';
 
 
 
@@ -24,6 +25,7 @@ export default function App() {
         <Stack.Screen name="Search" component={Search} options={{ headerShown: false }}/>
         <Stack.Screen name="MapScreen" component={MapScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Profil" component={Profil} options={{ headerShown: false }}/>
+        <Stack.Screen name="ListToilet" component={ListToilet} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
