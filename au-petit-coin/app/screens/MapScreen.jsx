@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { getFirestore, collection, getDocs } from '@firebase/firestore';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ListToilet from './ListToilet';
+import Localisation from '../../assets/localisation.png';
 
 
 const MapScreen = ({ navigation }) => {
@@ -111,7 +112,7 @@ const MapScreen = ({ navigation }) => {
               }}
               title={toilet.name}
               description={toilet.description}
-              pinColor="#219EBC"
+              image={Localisation}
             />
           ))}
 

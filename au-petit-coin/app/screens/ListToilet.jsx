@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, StatusBar } from 'react-native';
 
 const ListToilet = ({route, navigation: {goBack} }) => {
 
