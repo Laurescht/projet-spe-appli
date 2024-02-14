@@ -8,6 +8,7 @@ import { getFirestore, collection, getDocs } from '@firebase/firestore';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ListToilet from './ListToilet';
 import Localisation from '../../assets/localisation.png';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 const MapScreen = ({ navigation }) => {
@@ -112,7 +113,7 @@ const MapScreen = ({ navigation }) => {
               }}
               title={toilet.name}
               description={toilet.description}
-              image={Localisation}
+              pinColor="#219EBC"
             />
           ))}
 
@@ -137,7 +138,7 @@ const MapScreen = ({ navigation }) => {
         <Text style={styles.loadingText}>Chargement des directions...</Text>
       )}
           <TouchableOpacity style={styles.retourIconContainer} onPress={search}>
-            <Icon name={"arrowleft"} size={30} color="#219EBC" />
+          <FontAwesome name="arrow-left" size={25} color="#219ebc" marginTop={15}/>
           </TouchableOpacity>
           <TouchableOpacity style={styles.listeBtn} onPress={() => navigation.navigate('ListToilet', {toiletData: toiletData})}>
             <Text style={styles.ButtonList}>Voir en liste</Text>
