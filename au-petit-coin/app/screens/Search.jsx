@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, StyleSheet, Platform, PermissionsAndroid } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 import Fond from '../../assets/Fond.png';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useDebouncedCallback } from 'use-debounce';
+import GetLocation from 'react-native-get-location';
 
 const Search = () => {
 
@@ -16,6 +17,7 @@ const Search = () => {
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     });
+
 
     const navigation = useNavigation();
   
