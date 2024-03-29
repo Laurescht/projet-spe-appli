@@ -22,6 +22,7 @@ const MapScreen = ({ navigation }) => {
   const [directions, setDirections] = useState([]);
   const [mapRegion, setMapRegion] = useState(null);
   const [toiletData, setToiletData] = useState([]);
+  const [toiletCount, setToiletCount] = useState(0);
 
   useEffect(() => {
     console.log("Markers:", markers);
@@ -76,6 +77,8 @@ const MapScreen = ({ navigation }) => {
         //   id: doc.id,
         //   ...doc.data(),
         // }));
+        console.log('lenght')
+        console.log(snapshot.docs.length);
   
         setToiletData(data);
         console.log(snapshot);

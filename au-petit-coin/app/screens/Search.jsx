@@ -29,8 +29,9 @@ const Search = () => {
     };
 
     const handleSearch = useDebouncedCallback(async () => {
-      const apiKey = 'AIzaSyCcLJm1mrqbjI_JSyVE2x9P2xc_PilTEc0';
+      const apiKey = 'AIzaSyDs4gJhxBDouEgjg0G6rBp_eJekKenCCfA';
       const geocodeEndpoint = `https://maps.googleapis.com/maps/api/geocode/json?address=${searchTerm}&key=${apiKey}`;
+      
     
       console.log('Geocode Endpoint:', geocodeEndpoint);
     
