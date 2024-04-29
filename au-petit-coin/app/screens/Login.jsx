@@ -18,6 +18,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Fond from '../../assets/Fond.png';
 import { styles } from '../Styles/Connexion-InscriptionStyles';
+import Btn from '../components/Btn'
 // import {BlurView} from "@react-native-community/blur";
 
 const Login = ({ mode }) => {
@@ -133,9 +134,7 @@ return (
           autoCapitalize="none"
           onChangeText={(text) => setPassword(text)}
         />
-        <TouchableOpacity style={[styles.button, styles.registerButton]} onPress={signIn}>
-          <Text style={styles.buttonText}>Connexion</Text>
-        </TouchableOpacity>
+        <Btn btnAction={signIn} btnText="Connexion" />
         <TouchableOpacity style={styles.switchButton} onPress={() => navigation.navigate('Inscription')}>
           <Text style={styles.switchButtonText}>Pas encore inscrit ? S'inscrire</Text>
         </TouchableOpacity>

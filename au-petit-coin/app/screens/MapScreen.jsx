@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import ListToilet from './ListToilet';
 import Localisation from '../../assets/localisation.png';
 import { FontAwesome } from '@expo/vector-icons';
+import Btn from '../components/Btn'
 
 
 const MapScreen = ({ navigation }) => {
@@ -143,9 +144,7 @@ const MapScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.retourIconContainer} onPress={search}>
           <FontAwesome name="arrow-left" size={25} color="#219ebc" marginTop={15}/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.listeBtn} onPress={() => navigation.navigate('ListToilet', {toiletData: toiletData})}>
-            <Text style={styles.ButtonList}>Voir en liste</Text>
-          </TouchableOpacity>
+          <Btn btnAction={{ routeName: "ListToilet", additionalProps: { toiletData: toiletData}}} btnText="Voir en liste" btnStyle={{position: 'absolute', top: 70, marginLeft: 90 }}/>
     </View>
   );
       };  
@@ -156,21 +155,6 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
-  },
-  listeBtn: {
-    backgroundColor: '#219EBC',
-    padding: 10,
-    borderRadius: 5,
-    position: 'absolute',
-    top: 70,
-    left: '50%',
-    display: 'flex',
-    marginLeft: -120 / 2,
-  },
-  ButtonList: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    width: 100,
   },
   retourIconContainer: {
     position: 'absolute',

@@ -6,6 +6,7 @@ import Fond from '../../assets/Fond.png';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useDebouncedCallback } from 'use-debounce';
 import GetLocation from 'react-native-get-location';
+import Btn from '../components/Btn'
 
 const Search = () => {
 
@@ -122,9 +123,7 @@ const Search = () => {
             autoCapitalize="none"
             onChangeText={(text) => setSearchTerm(text)}
           />
-        <TouchableOpacity style={[styles.button, styles.registerButton]} onPress={handleSearch}>
-          <Text style={styles.buttonText}>Voir sur la carte</Text>
-        </TouchableOpacity>
+          <Btn btnAction={handleSearch} btnText="Voir sur la carte"/>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

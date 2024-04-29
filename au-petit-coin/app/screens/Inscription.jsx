@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, StatusBar, 
 import { useNavigation } from '@react-navigation/native';
 import Fond from '../../assets/Fond.png';
 import { styles } from '../Styles/Connexion-InscriptionStyles'
+import Btn from '../components/Btn'
 
 const Inscription = () => {
   const [email, setEmail] = useState('');
@@ -65,9 +66,7 @@ const Inscription = () => {
             autoCapitalize="none"
             onChangeText={(text) => setPassword(text)}
           />
-          <TouchableOpacity style={[styles.button, styles.registerButton]} onPress={signUp}>
-            <Text style={styles.buttonText}>Inscription</Text>
-          </TouchableOpacity>
+          <Btn btnAction={signUp} btnText="Inscription"/>
           <TouchableOpacity style={styles.switchButton} onPress={() => navigation.navigate('Login')}>
             <Text style={styles.switchButtonText}>Déjà inscrit ? Se connecter</Text>
           </TouchableOpacity>
