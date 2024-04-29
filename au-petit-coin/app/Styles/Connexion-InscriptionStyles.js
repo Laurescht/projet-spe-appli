@@ -4,14 +4,9 @@ export const styles = StyleSheet.create({
     container: {
       backgroundColor: '#FFFFFF',
     },
-    safeArea: {
-      flex: 1,
-      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    },
     topContainer: {
-      flex: 1,
       justifyContent: 'center',
-      alignItems: 'center',
+      top: 50,
       width: '100%',
     },
     backgroundImage: {
@@ -88,5 +83,10 @@ export const styles = StyleSheet.create({
     switchButtonText: {
       color: '#000000',
       fontSize: 16,
+    },
+    languageIconContainer: {
+      position: 'absolute',
+      top : 0,
+      left: 30,
     },
   });

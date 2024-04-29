@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import Fond from '../../assets/Fond.png';
 import { styles } from '../Styles/Connexion-InscriptionStyles'
 import Btn from '../components/Btn'
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 const Inscription = () => {
   const [email, setEmail] = useState('');
@@ -12,6 +13,10 @@ const Inscription = () => {
   const [loading, setLoading] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const navigation = useNavigation();
+
+  const handleChangeLanguage = () => {
+    console.log("Changer la langue");
+  };
 
   const auth = getAuth();
 
@@ -41,6 +46,12 @@ const Inscription = () => {
             <Image source={require("../../assets/Logo-Poopy.png")} style={styles.logo} />
             <Text style={styles.logoText}>Au p'tit coin</Text>
           </View>
+          <TouchableOpacity
+            style={styles.languageIconContainer}
+            onPress={handleChangeLanguage}
+          >
+            <Icon name={"globe"} size={30} color="#fff" />
+          </TouchableOpacity>
         </View>
   
         <View style={styles.bottomContainer}>

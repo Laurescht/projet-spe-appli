@@ -57,4 +57,9 @@ export const styles = StyleSheet.create({
     color: '#FFB703',
     fontWeight: 'bold',
   },
+  languageIconContainer: {
+    position: 'absolute',
+    top: 50,
+    left: 40,
+  },
 });
