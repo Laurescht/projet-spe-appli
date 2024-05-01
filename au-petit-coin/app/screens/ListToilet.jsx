@@ -15,9 +15,9 @@ import { FontAwesome } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Btn from "../components/Btn";
 
-const ListToilet = ({ route, navigation: { goBack } }) => {
-  const search = () => {
-    // navigation.navigate('Search');
+const ListToilet = ({ route, navigation: { goBack, navigate }}) => {
+  const handleToiletPress = (toilet) => {
+    navigate('ToiletDetails', { toilet }); // Utiliser navigate ici
   };
   const { toiletData } = route.params;
   const [toiletCount, setToiletCount] = useState(0);
@@ -27,6 +27,10 @@ const ListToilet = ({ route, navigation: { goBack } }) => {
     squatToilets: false,
     free: false,
   });
+
+  // const handleToiletPress = (toilet) => {
+  //   navigation.navigate('ToiletDetails', { toilet }); // Navigate to ToiletDetails page with toilet data
+  // };
 
   console.log(toiletData);
 
@@ -93,7 +97,7 @@ const ListToilet = ({ route, navigation: { goBack } }) => {
   console.log(getFilterIconName);
 
   const renderToiletItem = ({ item }) => (
-    <TouchableOpacity
+    <TouchableOpacity onPress={() => handleToiletPress(item)}
       style={{
         alignItems: "center",
       }}

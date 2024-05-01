@@ -9,6 +9,7 @@ import Profil from './app/screens/Profil';
 import Search from './app/screens/Search';
 import MapScreen from './app/screens/MapScreen';
 import ListToilet from './app/screens/ListToilet';
+import ToiletDetails from './app/screens/ToiletDetails'
 
 
 
@@ -26,6 +27,7 @@ export default function App() {
         <Stack.Screen name="MapScreen" component={MapScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Profil" component={Profil} options={{ headerShown: false }}/>
         <Stack.Screen name="ListToilet" component={ListToilet} options={{ headerShown: false }}/>
+        <Stack.Screen name="ToiletDetails" component={ToiletDetails} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
