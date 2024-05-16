@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { FIREBASE_AUTH } from '../../FirebaseConfig';
 
 const Profil = ({ route, navigation }) => {
 
@@ -19,9 +20,15 @@ const Profil = ({ route, navigation }) => {
       <View style={styles.profilContainer}>
         <Text style={styles.welcomeText}>Bienvenue !</Text>
 
-        <TouchableOpacity style={styles.Button} onPress={handleLogout}>
+        {/* <TouchableOpacity style={styles.Button} onPress={handleLogout}>
           <Text style={styles.ButtonText}>Déconnexion</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+        style={[styles.Button]}
+        onPress={() => FIREBASE_AUTH.signOut()}
+      >
+        <Text style={styles.ButtonText}>Déconnexion</Text>
+      </TouchableOpacity>
         <TouchableOpacity style={styles.Button} onPress={search}>
           <Text style={styles.ButtonText}>Retour</Text>
         </TouchableOpacity>

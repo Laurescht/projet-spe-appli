@@ -16,9 +16,6 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import Btn from "../components/Btn";
 
 const ListToilet = ({ route, navigation: { goBack, navigate }}) => {
-  const handleToiletPress = (toilet) => {
-    navigate('ToiletDetails', { toilet }); // Utiliser navigate ici
-  };
   const { toiletData } = route.params;
   const [toiletCount, setToiletCount] = useState(0);
   const [filters, setFilters] = useState({
@@ -97,7 +94,7 @@ const ListToilet = ({ route, navigation: { goBack, navigate }}) => {
   console.log(getFilterIconName);
 
   const renderToiletItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleToiletPress(item)}
+    <TouchableOpacity onPress={() => navigate('ToiletDetails', { toilet : item })}
       style={{
         alignItems: "center",
       }}

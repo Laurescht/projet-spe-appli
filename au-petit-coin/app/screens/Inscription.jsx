@@ -6,8 +6,12 @@ import Fond from '../../assets/Fond.png';
 import { styles } from '../Styles/Connexion-InscriptionStyles'
 import Btn from '../components/Btn'
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { useUser } from '../../UserContext';
+import { collection, doc, setDoc } from "firebase/firestore";
+import { firestore } from '../../FirebaseConfig';
 
 const Inscription = () => {
+  const {updateUser} = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,7 +28,21 @@ const Inscription = () => {
     setLoading(true);
     try {
       const response = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(response);
+      const userID = response.user.uid;
+
+      const usersCollection = collection(firestore, "users");
+      await setDoc(doc(usersCollection, userID), {
+        uid: userID,
+        //pseudo: pseudo,
+        email: email,
+      });
+
+      // pour le context
+      updateUser({
+        uid: userID,
+        //pseudo: pseudo,
+        email: email,
+      });
       alert('Consultez vos mails !');
     } catch (error) {
       console.log(error);
@@ -35,7 +53,11 @@ const Inscription = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={{
+      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      flex: 1,
+      justifyContent: "center",
+    }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}

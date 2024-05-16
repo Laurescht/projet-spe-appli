@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Platform,
   PermissionsAndroid,
+  StatusBar
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";

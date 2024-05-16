@@ -1,11 +1,52 @@
-import React from "react";
-import { View, Text, Image, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  Button,
+} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { firestore } from "../../FirebaseConfig";
+import { collection, addDoc, serverTimestamp, onSnapshot, orderBy, getDocs, query } from "firebase/firestore";
+import { useUser } from "../../UserContext";
 
-const ToiletDetails = ({ route }) => {
+
+const ToiletDetails = ({ route, navigation }) => {
   const { toilet } = route.params;
-  const navigation = useNavigation();
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const collectionRef = collection(firestore, "toilettes", toilet.id, "comments");
+  const {user} = useUser();
+  console.log(user)
+
+  const getComments = async() => {
+    const q = query(collectionRef, orderBy("timestamp", "desc"));
+    const collectionDoc = await getDocs(q);
+    const data = [];
+    collectionDoc.forEach((doc) => {data.push(doc.data())});
+    setComments(data)
+    console.log(data)
+  }
+
+  useEffect(() => {
+    getComments();
+  }, [toilet.id]);
+
+  const addComment = async () => {
+    console.log(toilet.id)
+    console.log(collectionRef)
+    // const q = query(collectionRef, orderBy("timestamp", "desc"));
+    await addDoc(collectionRef, {
+      userId: user.uid,
+      content: comment,
+      timestamp: serverTimestamp(),
+    });
+  };
+
 
   return (
     <View style={{}}>
@@ -17,7 +58,10 @@ const ToiletDetails = ({ route }) => {
           <FontAwesome name="arrow-left" size={24} color="#FFF" />
         </View>
       </TouchableOpacity>
-      <ImageBackground source={{ uri: toilet.image }} style={styles.toiletImage}>
+      <ImageBackground
+        source={{ uri: toilet.image }}
+        style={styles.toiletImage}
+      >
         <Text style={styles.toiletName}>{toilet.name}</Text>
       </ImageBackground>
 
@@ -86,6 +130,52 @@ const ToiletDetails = ({ route }) => {
           <Text style={styles.ratingText}>{toilet.rating.toFixed(1)}</Text>
         </View>
       </View>
+
+      {comments.length > 0 ? (
+        <View style={{paddingHorizontal: 20}}>
+          <Text style={{fontWeight: "bold"}}>Avis :</Text>
+          <View style={{ padding: 20, backgroundColor: "blue" }}>
+            {comments.map((comment) => (
+              <Text key={comment.id}>{comment.content}</Text>
+            ))}
+          </View>
+          <View style={{  }}>
+            <TextInput
+              placeholder="Ajouter un commentaire..."
+              value={comment}
+              onChangeText={setComment}
+              style={{
+                marginTop: 15,
+                // borderWidth: 1,
+                // borderColor: "#ccc",
+                padding: 15,
+                backgroundColor: "#FFEEC6"
+              }}
+            />
+            <Button title="Ajouter un commentaire" onPress={addComment}/>
+          </View>
+
+        </View>
+              
+      ) : (
+        <View>
+          <Text>Pas de commentaires...</Text>
+          <View style={{ padding: 20 }}>
+            <TextInput
+              placeholder="Ajouter un commentaire..."
+              value={comment}
+              onChangeText={setComment}
+              style={{
+                marginBottom: 10,
+                borderWidth: 1,
+                borderColor: "#ccc",
+                padding: 5,
+              }}
+            />
+            <Button title="Ajouter un commentaire" onPress={addComment}/>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -105,7 +195,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 5,
     fontWeight: "bold",
-    fontSize: 18
+    fontSize: 18,
   },
   backButton: {
     position: "absolute",

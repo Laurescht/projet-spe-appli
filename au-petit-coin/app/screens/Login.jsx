@@ -1,4 +1,4 @@
-import { auth } from "../../FirebaseConfig";
+import { auth, FIREBASE_AUTH } from "../../FirebaseConfig";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -23,15 +23,45 @@ import Fond from "../../assets/Fond.png";
 import { styles } from "../Styles/Connexion-InscriptionStyles";
 import Btn from "../components/Btn";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { useUser } from "../../UserContext";
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "../../FirebaseConfig";
 // import {BlurView} from "@react-native-community/blur";
 
 const Login = ({ mode }) => {
+  const {updateUser} = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [authMode, setAuthMode] = useState("login");
   const navigation = useNavigation();
   const [isKeyboardOpen, setKeyboardOpen] = useState(false);
+  const auth = FIREBASE_AUTH;
+
+  const getUserDetailsFromFirestore = async (uid) => {
+    const userDoc = doc(firestore, "users", uid);
+
+    try {
+      const userDocSnapshot = await getDoc(userDoc);
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data();
+
+        // Mise à jour du contexte utilisateur avec les détails récupérés
+        updateUser({
+          uid: uid,
+          email: email,
+          imageURL: userData.imageURL  || "",
+        });
+      } else {
+        console.log("Le document utilisateur n'existe pas dans Firestore.");
+      }
+    } catch (error) {
+      console.log(
+        "Erreur lors de la récupération des détails utilisateur depuis Firestore:",
+        error
+      );
+    }
+  };
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -62,47 +92,14 @@ const Login = ({ mode }) => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
-      console.log({ email });
+      await getUserDetailsFromFirestore(response.user.uid)
 
-      navigation.navigate("Search", { email });
+      //navigation.navigate("Search", { email });
     } catch (error) {
-      console.log(error);
       alert("La connexion a échoué : " + error.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  const signUp = async () => {
-    setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log(response);
-      alert("Consultez vos mails !");
-
-      navigation.navigate("Search", { email });
-    } catch (error) {
-      console.log(error);
-      alert("L'inscription a échoué : " + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const toggleAuthMode = () => {
-    setAuthMode((prevAuthMode) =>
-      prevAuthMode === "login" ? "signup" : "login"
-    );
-    console.log(authMode);
-  };
-
-  const navigateToHome = () => {
-    navigation.navigate("Home");
   };
 
   return (
