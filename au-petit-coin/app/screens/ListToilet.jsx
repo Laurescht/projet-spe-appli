@@ -21,6 +21,9 @@ const ListToilet = ({ route, navigation: { goBack, navigate } }) => {
   const { user } = useUser();
   const { toiletData } = route.params;
   const [toiletCount, setToiletCount] = useState(0);
+  const search = () => {
+    navigate('Search');
+  };
   const [filters, setFilters] = useState({
     babyZone: false,
     disabledAccess: false,
@@ -204,6 +207,9 @@ const ListToilet = ({ route, navigation: { goBack, navigate } }) => {
           justifyContent: "flex-end",
         }}
       >
+        <TouchableOpacity style={styles.retourIconContainer} onPress={search}>
+          <FontAwesome name="arrow-left" size={25} color="#fff" marginTop={15}/>
+          </TouchableOpacity>
         <Btn
           btnAction={goBack}
           btnText="Voir sur la carte"

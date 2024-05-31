@@ -30,6 +30,7 @@ export const styles = StyleSheet.create({
       resizeMode: 'contain',
     },
     bottomContainer: {
+      zIndex:-1,
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',

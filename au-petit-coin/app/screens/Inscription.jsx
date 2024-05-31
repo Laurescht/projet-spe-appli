@@ -43,7 +43,6 @@ const Inscription = () => {
         pseudo: pseudo,
         email: email,
       });
-      alert('Consultez vos mails !');
     } catch (error) {
       alert("L'inscription a échoué : " + error.message);
     } finally {

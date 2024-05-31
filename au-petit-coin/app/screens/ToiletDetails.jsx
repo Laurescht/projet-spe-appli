@@ -27,7 +27,7 @@ import {
   query,
 } from "firebase/firestore";
 import { useUser } from "../../UserContext";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 
 const ToiletDetails = ({ route, navigation }) => {
   const { toilet } = route.params;
@@ -55,7 +55,6 @@ const ToiletDetails = ({ route, navigation }) => {
       console.error(error);
     }
   };
-  
 
   useEffect(() => {
     getComments();
@@ -63,14 +62,14 @@ const ToiletDetails = ({ route, navigation }) => {
 
   const addComment = async () => {
     if (comment.trim() === "") return;
-  
+
     const newComment = {
       userId: user?.uid,
       pseudo: user.pseudo,
       content: comment,
       timestamp: new Date(),
     };
-  
+
     try {
       await addDoc(collectionRef, newComment);
       setComments((prevComments) => [newComment, ...prevComments]);
@@ -80,7 +79,6 @@ const ToiletDetails = ({ route, navigation }) => {
       console.error("Error adding comment: ", error);
     }
   };
-  
 
   const renderCommentsItem = ({ item }) => {
     const formatDate = (timestamp) => {
@@ -102,15 +100,16 @@ const ToiletDetails = ({ route, navigation }) => {
       }
     };
 
-    const date = item.timestamp?.toDate ? item.timestamp.toDate() : new Date(item.timestamp);
+    const date = item.timestamp?.toDate
+      ? item.timestamp.toDate()
+      : new Date(item.timestamp);
     const formattedDate = formatDate(date);
-  
+
     return (
       <View
         style={{
           backgroundColor: "#FFEEC6",
           flex: 1,
-          flexDirection: "row",
           justifyContent: "space-between",
           padding: 10,
           marginBottom: 10,
@@ -121,14 +120,14 @@ const ToiletDetails = ({ route, navigation }) => {
           shadowRadius: 3,
         }}
       >
-        <View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={{ marginBottom: 10, fontWeight: "bold" }}>
             {item.pseudo}
           </Text>
-          <Text>{item.content}</Text>
+          <Text>{formattedDate}</Text>
         </View>
         <View>
-          <Text>{formattedDate}</Text>
+          <Text>{item.content}</Text>
         </View>
       </View>
     );
@@ -223,8 +222,8 @@ const ToiletDetails = ({ route, navigation }) => {
         </View>
 
         {comments.length > 0 ? (
-          <View style={{ paddingHorizontal: 20, flex: 1, marginTop:20 }}>
-            <Text style={{ fontWeight: "bold",  marginBottom:15 }}>Avis :</Text>
+          <View style={{ paddingHorizontal: 20, flex: 1, marginTop: 20 }}>
+            <Text style={{ fontWeight: "bold", marginBottom: 15 }}>Avis :</Text>
 
             <FlatList
               data={comments}
@@ -233,7 +232,9 @@ const ToiletDetails = ({ route, navigation }) => {
             />
           </View>
         ) : (
-          <Text>Pas de commentaires...</Text>
+          <View style={{alignItems:'center', justifyContent:'center', flex:1}}>
+            <Text style={{ textAlign: "center" }}>Soit le premier à ajouter un commentaire...</Text>
+          </View>
         )}
       </View>
       <View style={styles.commentInputContainer}>
@@ -327,13 +328,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   commentInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: 10,
     marginHorizontal: 20,
     marginBottom: 20,
     backgroundColor: "#FFEEC6",
-    padding: 5
+    padding: 5,
   },
   commentInput: {
     flex: 1,

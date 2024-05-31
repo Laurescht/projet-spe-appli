@@ -94,39 +94,28 @@ const Search = () => {
   return (
     <SafeAreaView
       style={{
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
         flex: 1,
-        justifyContent: "center",
       }}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : ""}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
         <View style={styles.topContainer}>
-          <Image
-            source={Fond}
-            style={styles.backgroundImage}
-            resizeMode="cover"
-          />
+          <Image source={Fond} style={styles.backgroundImage} resizeMode="cover" />
           <View style={styles.logoContainer}>
             <Image
-              source={require("../../assets/Logo-Poopy.png")}
+              source={require('../../assets/Logo-Poopy.png')}
               style={styles.logo}
             />
             <Text style={styles.logoText}>Au p'tit coin</Text>
           </View>
-          <TouchableOpacity
-            style={styles.languageIconContainer}
-            onPress={handleChangeLanguage}
-          >
-            <Icon name={"globe"} size={30} color="#fff" />
+          <TouchableOpacity style={styles.languageIconContainer} onPress={handleChangeLanguage}>
+            <Icon name="globe" size={30} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.profileIconContainer}
-            onPress={navigateToProfile}
-          >
-            <Icon name={"user-circle"} size={30} color="#fff" />
+          <TouchableOpacity style={styles.profileIconContainer} onPress={navigateToProfile}>
+            <Icon name="user-circle" size={30} color="#fff" />
           </TouchableOpacity>
         </View>
 
@@ -134,7 +123,7 @@ const Search = () => {
           <View style={styles.textContainer}>
             <Text style={styles.titleText}>
               <Text style={styles.yellowText}>Où</Text>
-              {"\n"}sommes nous ?
+              {'\n'}sommes nous ?
             </Text>
           </View>
           <TextInput
