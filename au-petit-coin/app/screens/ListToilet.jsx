@@ -9,13 +9,16 @@ import {
   ImageBackground,
   ScrollView,
   Image,
+  Platform,
   Modal,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Btn from "../components/Btn";
+import { useUser } from "../../UserContext";
 
-const ListToilet = ({ route, navigation: { goBack, navigate }}) => {
+const ListToilet = ({ route, navigation: { goBack, navigate } }) => {
+  const { user } = useUser();
   const { toiletData } = route.params;
   const [toiletCount, setToiletCount] = useState(0);
   const [filters, setFilters] = useState({
@@ -28,10 +31,6 @@ const ListToilet = ({ route, navigation: { goBack, navigate }}) => {
   // const handleToiletPress = (toilet) => {
   //   navigation.navigate('ToiletDetails', { toilet }); // Navigate to ToiletDetails page with toilet data
   // };
-
-  console.log(toiletData);
-
-  console.log(filters);
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -91,10 +90,10 @@ const ListToilet = ({ route, navigation: { goBack, navigate }}) => {
     }
   };
 
-  console.log(getFilterIconName);
 
   const renderToiletItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigate('ToiletDetails', { toilet : item })}
+    <TouchableOpacity
+      onPress={() => navigate("ToiletDetails", { toilet: item })}
       style={{
         alignItems: "center",
       }}
@@ -424,22 +423,21 @@ const ListToilet = ({ route, navigation: { goBack, navigate }}) => {
                 <Text>Gratuit</Text>
               </TouchableOpacity>
             </View>
-              <Btn
-                btnAction={() => setModalVisible(!modalVisible)}
-                btnText="Enregistrer ma sélection"
-                btnStyle={{ backgroundColor: "#219EBC" }}
-              />
+            <Btn
+              btnAction={() => setModalVisible(!modalVisible)}
+              btnText="Enregistrer ma sélection"
+              btnStyle={{ backgroundColor: "#219EBC" }}
+            />
           </View>
         </View>
       </Modal>
-      <ScrollView>
-        {/* Afficher les résultats filtrés */}
-        <FlatList
-          data={filteredToiletData}
-          keyExtractor={(item) => item.name}
-          renderItem={renderToiletItem}
-        />
-      </ScrollView>
+        <View style={{flex: 1}}>
+          <FlatList
+            data={filteredToiletData}
+            keyExtractor={(item) => item.name}
+            renderItem={renderToiletItem}
+          />
+        </View>
     </View>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, StatusBar, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StatusBar, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Fond from '../../assets/Fond.png';
 import { styles } from '../Styles/Connexion-InscriptionStyles'
@@ -13,9 +13,9 @@ import { firestore } from '../../FirebaseConfig';
 const Inscription = () => {
   const {updateUser} = useUser();
   const [email, setEmail] = useState('');
+  const [pseudo, setPseudo] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
   const navigation = useNavigation();
 
   const handleChangeLanguage = () => {
@@ -33,24 +33,29 @@ const Inscription = () => {
       const usersCollection = collection(firestore, "users");
       await setDoc(doc(usersCollection, userID), {
         uid: userID,
-        //pseudo: pseudo,
+        pseudo: pseudo,
         email: email,
       });
 
       // pour le context
       updateUser({
         uid: userID,
-        //pseudo: pseudo,
+        pseudo: pseudo,
         email: email,
       });
       alert('Consultez vos mails !');
     } catch (error) {
-      console.log(error);
       alert("L'inscription a échoué : " + error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  if(loading) {
+    return (
+      <Text>Chargement ...</Text>
+    )
+  }
 
   return (
     <SafeAreaView style={{
@@ -82,6 +87,14 @@ const Inscription = () => {
               <Text style={styles.yellowText}>Je</Text>{'\n'}m'inscris !
             </Text>
           </View>
+          <TextInput
+            value={pseudo}
+            style={styles.input}
+            placeholder="Pseudo"
+            placeholderTextColor="#000000"
+            autoCapitalize="none"
+            onChangeText={(text) => setPseudo(text)}
+          />
           <TextInput
             value={email}
             style={styles.input}

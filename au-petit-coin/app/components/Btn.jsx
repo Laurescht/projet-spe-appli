@@ -12,20 +12,20 @@ const Btn = ({btnAction, btnText, btnStyle}) => {
     const handlePress = () => {
         if (typeof btnAction === 'function'){
           btnAction();
-          console.log('fonction' , btnAction)
+         
         }
         else if (typeof btnAction === 'string') {
-          console.log(btnAction)
+
           navigation.navigate(btnAction);
         }
         else if (typeof btnAction === 'object' && btnAction.routeName) {
-          console.log(btnAction)
+
           const { routeName, additionalProps } = btnAction;
           navigation.navigate(routeName, additionalProps);
         }
       };
 
-      console.log(btnStyle)
+
 
   return (
     <TouchableOpacity

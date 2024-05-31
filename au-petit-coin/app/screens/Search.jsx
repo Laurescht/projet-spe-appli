@@ -10,7 +10,7 @@ import {
   StyleSheet,
   Platform,
   PermissionsAndroid,
-  StatusBar
+  StatusBar,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
@@ -33,17 +33,12 @@ const Search = () => {
   const navigation = useNavigation();
 
   const handleSeeOnMap = () => {
-    console.log("Voir sur la carte");
-    console.log("markers: ", markers);
-    console.log("region: ", region);
     navigation.navigate("MapScreen", { markers, region });
   };
 
   const handleSearch = useDebouncedCallback(async () => {
     const apiKey = "AIzaSyDs4gJhxBDouEgjg0G6rBp_eJekKenCCfA";
     const geocodeEndpoint = `https://maps.googleapis.com/maps/api/geocode/json?address=${searchTerm}&key=${apiKey}`;
-
-    console.log("Geocode Endpoint:", geocodeEndpoint);
 
     try {
       const response = await fetch(geocodeEndpoint);
@@ -54,11 +49,8 @@ const Search = () => {
 
       const data = await response.json();
 
-      console.log("Geocoding Data:", data);
-
       if (data.status === "OK" && data.results && data.results.length > 0) {
         const location = data.results[0].geometry.location;
-        console.log("Location:", location);
 
         const newMarkers = [
           {
@@ -165,9 +157,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   topContainer: {
-      justifyContent: 'center',
-      top: 50,
-      width: '100%',
+    justifyContent: "center",
+    top: 50,
+    width: "100%",
   },
   outlinedIcon: {
     borderWidth: 0.5,
@@ -186,7 +178,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     position: "absolute",
-    width: '100%'
+    width: "100%",
   },
   logoContainer: {
     alignItems: "center",

@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 import { getFirestore, collection, getDocs } from '@firebase/firestore';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ListToilet from './ListToilet';
-import Localisation from '../../assets/localisation.png';
 import { FontAwesome } from '@expo/vector-icons';
 import Btn from '../components/Btn'
 
@@ -26,7 +25,6 @@ const MapScreen = ({ navigation }) => {
   const [toiletCount, setToiletCount] = useState(0);
 
   useEffect(() => {
-    console.log("Markers:", markers);
     if (markers.length >= 2) {
       getDirections(markers[0], markers[1]).then((directionsResult) => {
         setDirections(directionsResult);
@@ -78,11 +76,9 @@ const MapScreen = ({ navigation }) => {
         //   id: doc.id,
         //   ...doc.data(),
         // }));
-        console.log('lenght')
-        console.log(snapshot.docs.length);
   
         setToiletData(data);
-        console.log(snapshot);
+
         } catch(error){
           console.error('Erreur: ', error);
           throw error;
@@ -92,12 +88,6 @@ const MapScreen = ({ navigation }) => {
   
       fetchToiletData();
     }, []);
-
-    const retour = () => {
-      console.log('retour');
-    };
-  
-  
 
   return (
     <View style={styles.container}>

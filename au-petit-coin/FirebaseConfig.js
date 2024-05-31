@@ -13,10 +13,8 @@ const firebaseConfig = {
   appId: "1:405196268355:web:b95fcd68022f85fa9e85f6"
 };
 
-const app = initializeApp(firebaseConfig);
-const persistence = getReactNativePersistence(ReactNativeAsyncStorage);
+export const app = initializeApp(firebaseConfig);
+export const persistence = getReactNativePersistence(ReactNativeAsyncStorage);
 //const auth = getAuth(app, { persistence });
-const firestore = getFirestore(app);
-const FIREBASE_AUTH = getAuth(app);
-
-export { firestore, FIREBASE_AUTH };
+export const firestore = getFirestore(app);
+export const FIREBASE_AUTH = getAuth(app);

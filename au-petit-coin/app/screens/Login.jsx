@@ -29,7 +29,7 @@ import { firestore } from "../../FirebaseConfig";
 // import {BlurView} from "@react-native-community/blur";
 
 const Login = ({ mode }) => {
-  const {updateUser} = useUser();
+  const { user, updateUser } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,12 +45,12 @@ const Login = ({ mode }) => {
       const userDocSnapshot = await getDoc(userDoc);
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
-
         // Mise à jour du contexte utilisateur avec les détails récupérés
         updateUser({
           uid: uid,
+          pseudo: userData.pseudo,
           email: email,
-          imageURL: userData.imageURL  || "",
+          imageURL: userData.imageURL || "",
         });
       } else {
         console.log("Le document utilisateur n'existe pas dans Firestore.");
@@ -92,7 +92,7 @@ const Login = ({ mode }) => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      await getUserDetailsFromFirestore(response.user.uid)
+      await getUserDetailsFromFirestore(response.user.uid);
 
       //navigation.navigate("Search", { email });
     } catch (error) {

@@ -37,6 +37,15 @@
     },
     "updates": {
       "url": "https://u.expo.dev/e7701bf8-be80-4e97-b9e9-32ad97cd5746"
-    }
+    },
+    "plugins": [
+      [
+        "expo-asset",
+        
+        {
+          "assets": ["./assets/Logo-Poopy.png"]
+        }
+      ]
+    ]
   }
 }

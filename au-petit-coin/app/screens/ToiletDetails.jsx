@@ -8,175 +8,246 @@ import {
   TouchableOpacity,
   TextInput,
   Button,
+  FlatList,
+  ScrollView,
+  Platform,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { firestore } from "../../FirebaseConfig";
-import { collection, addDoc, serverTimestamp, onSnapshot, orderBy, getDocs, query } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  onSnapshot,
+  orderBy,
+  getDocs,
+  query,
+} from "firebase/firestore";
 import { useUser } from "../../UserContext";
-
+import { MaterialIcons } from '@expo/vector-icons';
 
 const ToiletDetails = ({ route, navigation }) => {
   const { toilet } = route.params;
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
-  const collectionRef = collection(firestore, "toilettes", toilet.id, "comments");
-  const {user} = useUser();
-  console.log(user)
+  const { user } = useUser();
+  const collectionRef = collection(
+    firestore,
+    "toilettes",
+    toilet.id,
+    "comments"
+  );
 
-  const getComments = async() => {
-    const q = query(collectionRef, orderBy("timestamp", "desc"));
-    const collectionDoc = await getDocs(q);
-    const data = [];
-    collectionDoc.forEach((doc) => {data.push(doc.data())});
-    setComments(data)
-    console.log(data)
-  }
+  const getComments = async () => {
+    const q = query(collectionRef, orderBy("timestamp", "desc")); // Tri par ordre croissant
+    try {
+      const collectionDoc = await getDocs(q);
+      const data = [];
+      collectionDoc.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+      });
+      // Mettre à jour les commentaires dans le state
+      setComments(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 
   useEffect(() => {
     getComments();
-  }, [toilet.id]);
+  }, []);
 
   const addComment = async () => {
-    console.log(toilet.id)
-    console.log(collectionRef)
-    // const q = query(collectionRef, orderBy("timestamp", "desc"));
-    await addDoc(collectionRef, {
-      userId: user.uid,
+    if (comment.trim() === "") return;
+  
+    const newComment = {
+      userId: user?.uid,
+      pseudo: user.pseudo,
       content: comment,
-      timestamp: serverTimestamp(),
-    });
+      timestamp: new Date(),
+    };
+  
+    try {
+      await addDoc(collectionRef, newComment);
+      setComments((prevComments) => [newComment, ...prevComments]);
+      setComment("");
+      Keyboard.dismiss();
+    } catch (error) {
+      console.error("Error adding comment: ", error);
+    }
+  };
+  
+
+  const renderCommentsItem = ({ item }) => {
+    const formatDate = (timestamp) => {
+      const now = new Date();
+      const diffInMs = now - new Date(timestamp);
+      const diffInSeconds = Math.floor(diffInMs / 1000);
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      const diffInDays = Math.floor(diffInHours / 24);
+
+      if (diffInSeconds < 60) {
+        return `il y a ${diffInSeconds} secondes`;
+      } else if (diffInMinutes < 60) {
+        return `il y a ${diffInMinutes} minutes`;
+      } else if (diffInHours < 24) {
+        return `il y a ${diffInHours} heures`;
+      } else {
+        return `il y a ${diffInDays} jours`;
+      }
+    };
+
+    const date = item.timestamp?.toDate ? item.timestamp.toDate() : new Date(item.timestamp);
+    const formattedDate = formatDate(date);
+  
+    return (
+      <View
+        style={{
+          backgroundColor: "#FFEEC6",
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          padding: 10,
+          marginBottom: 10,
+          borderRadius: 10,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 1.5 },
+          shadowOpacity: 0.25,
+          shadowRadius: 3,
+        }}
+      >
+        <View>
+          <Text style={{ marginBottom: 10, fontWeight: "bold" }}>
+            {item.pseudo}
+          </Text>
+          <Text>{item.content}</Text>
+        </View>
+        <View>
+          <Text>{formattedDate}</Text>
+        </View>
+      </View>
+    );
   };
 
-
   return (
-    <View style={{}}>
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.backButton}
-      >
-        <View style={styles.backButtonCircle}>
-          <FontAwesome name="arrow-left" size={24} color="#FFF" />
-        </View>
-      </TouchableOpacity>
-      <ImageBackground
-        source={{ uri: toilet.image }}
-        style={styles.toiletImage}
-      >
-        <Text style={styles.toiletName}>{toilet.name}</Text>
-      </ImageBackground>
-
-      <View
-        style={[
-          styles.filtersContainer,
-          { backgroundColor: "#FFEEC6", padding: 20, height: 100 },
-        ]}
-      >
-        {toilet.babyZone && (
-          <View style={[styles.filterContainer, styles.activeFilter]}>
-            <Image
-              source={require("../../assets/zone-bebe.png")}
-              style={styles.filterIcon}
-            />
-          </View>
-        )}
-
-        {toilet.squatToilets && (
-          <View style={[styles.filterContainer, styles.activeFilter]}>
-            <Image
-              source={require("../../assets/toilettes-turque.png")}
-              style={styles.filterIcon}
-            />
-          </View>
-        )}
-
-        {toilet.disabledAccess && (
-          <View style={[styles.filterContainer, styles.activeFilter]}>
-            <Image
-              source={require("../../assets/handicape.png")}
-              style={styles.filterIcon}
-            />
-          </View>
-        )}
-
-        {toilet.free && (
-          <View style={[styles.filterContainer, styles.activeFilter]}>
-            <Image
-              source={require("../../assets/gratuit.png")}
-              style={styles.filterIcon}
-            />
-          </View>
-        )}
-      </View>
-
-      <View style={styles.infoContainer}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      keyboardVerticalOffset={Platform.select({ ios: 0, android: 500 })}
+    >
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
         >
-          <FontAwesome name="map-marker" size={16} color="#219ebc" />
-          <Text style={styles.addressText}>{toilet.adress}</Text>
-        </View>
-        <View style={styles.starContainer}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <FontAwesome
-              key={star}
-              name={star <= toilet.rating ? "star" : "star-o"}
-              size={12}
-              color="#FFD700"
-            />
-          ))}
-          <Text style={styles.ratingText}>{toilet.rating.toFixed(1)}</Text>
-        </View>
-      </View>
+          <View style={styles.backButtonCircle}>
+            <FontAwesome name="arrow-left" size={24} color="#FFF" />
+          </View>
+        </TouchableOpacity>
+        <ImageBackground
+          source={{ uri: toilet.image }}
+          style={styles.toiletImage}
+        >
+          <Text style={styles.toiletName}>{toilet.name}</Text>
+        </ImageBackground>
 
-      {comments.length > 0 ? (
-        <View style={{paddingHorizontal: 20}}>
-          <Text style={{fontWeight: "bold"}}>Avis :</Text>
-          <View style={{ padding: 20, backgroundColor: "blue" }}>
-            {comments.map((comment) => (
-              <Text key={comment.id}>{comment.content}</Text>
+        <View
+          style={[
+            styles.filtersContainer,
+            { backgroundColor: "#FFEEC6", padding: 20, height: 100 },
+          ]}
+        >
+          {toilet.babyZone && (
+            <View style={[styles.filterContainer, styles.activeFilter]}>
+              <Image
+                source={require("../../assets/zone-bebe.png")}
+                style={styles.filterIcon}
+              />
+            </View>
+          )}
+
+          {toilet.squatToilets && (
+            <View style={[styles.filterContainer, styles.activeFilter]}>
+              <Image
+                source={require("../../assets/toilettes-turque.png")}
+                style={styles.filterIcon}
+              />
+            </View>
+          )}
+
+          {toilet.disabledAccess && (
+            <View style={[styles.filterContainer, styles.activeFilter]}>
+              <Image
+                source={require("../../assets/handicape.png")}
+                style={styles.filterIcon}
+              />
+            </View>
+          )}
+
+          {toilet.free && (
+            <View style={[styles.filterContainer, styles.activeFilter]}>
+              <Image
+                source={require("../../assets/gratuit.png")}
+                style={styles.filterIcon}
+              />
+            </View>
+          )}
+        </View>
+
+        <View style={styles.infoContainer}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <FontAwesome name="map-marker" size={16} color="#219ebc" />
+            <Text style={styles.addressText}>{toilet.adress}</Text>
+          </View>
+          <View style={styles.starContainer}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <FontAwesome
+                key={star}
+                name={star <= toilet.rating ? "star" : "star-o"}
+                size={12}
+                color="#FFD700"
+              />
             ))}
+            <Text style={styles.ratingText}>{toilet.rating.toFixed(1)}</Text>
           </View>
-          <View style={{  }}>
-            <TextInput
-              placeholder="Ajouter un commentaire..."
-              value={comment}
-              onChangeText={setComment}
-              style={{
-                marginTop: 15,
-                // borderWidth: 1,
-                // borderColor: "#ccc",
-                padding: 15,
-                backgroundColor: "#FFEEC6"
-              }}
-            />
-            <Button title="Ajouter un commentaire" onPress={addComment}/>
-          </View>
+        </View>
 
-        </View>
-              
-      ) : (
-        <View>
-          <Text>Pas de commentaires...</Text>
-          <View style={{ padding: 20 }}>
-            <TextInput
-              placeholder="Ajouter un commentaire..."
-              value={comment}
-              onChangeText={setComment}
-              style={{
-                marginBottom: 10,
-                borderWidth: 1,
-                borderColor: "#ccc",
-                padding: 5,
-              }}
+        {comments.length > 0 ? (
+          <View style={{ paddingHorizontal: 20, flex: 1, marginTop:20 }}>
+            <Text style={{ fontWeight: "bold",  marginBottom:15 }}>Avis :</Text>
+
+            <FlatList
+              data={comments}
+              keyExtractor={(item) => item.id}
+              renderItem={renderCommentsItem}
             />
-            <Button title="Ajouter un commentaire" onPress={addComment}/>
           </View>
-        </View>
-      )}
-    </View>
+        ) : (
+          <Text>Pas de commentaires...</Text>
+        )}
+      </View>
+      <View style={styles.commentInputContainer}>
+        <TextInput
+          placeholder="Ajouter un commentaire..."
+          value={comment}
+          onChangeText={setComment}
+          style={styles.commentInput}
+        />
+        <TouchableOpacity onPress={addComment} style={styles.sendButton}>
+          <MaterialIcons name="send" size={24} color="#219ebc" />
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -190,7 +261,6 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     bottom: 20,
     left: 10,
-    // backgroundColor: "rgba(33, 158, 188, 0.5)",
     color: "#FFF",
     padding: 8,
     borderRadius: 5,
@@ -255,6 +325,22 @@ const styles = StyleSheet.create({
     color: "#767070",
     marginLeft: 5,
     fontSize: 12,
+  },
+  commentInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    backgroundColor: "#FFEEC6",
+    padding: 5
+  },
+  commentInput: {
+    flex: 1,
+    marginRight: 10,
+  },
+  sendButton: {
+    padding: 10,
   },
 });
 
