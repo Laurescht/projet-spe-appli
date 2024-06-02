@@ -18,9 +18,7 @@ const Inscription = () => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  const handleChangeLanguage = () => {
-    console.log("Changer la langue");
-  };
+  const handleChangeLanguage = () => {};
 
   const auth = getAuth();
 
@@ -37,7 +35,6 @@ const Inscription = () => {
         email: email,
       });
 
-      // pour le context
       updateUser({
         uid: userID,
         pseudo: pseudo,

@@ -2,16 +2,12 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  Image,
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Button,
   FlatList,
-  ScrollView,
   Platform,
-  SafeAreaView,
   KeyboardAvoidingView,
   Keyboard,
 } from "react-native";
@@ -20,7 +16,6 @@ import { firestore } from "../../FirebaseConfig";
 import {
   collection,
   addDoc,
-  serverTimestamp,
   onSnapshot,
   orderBy,
   getDocs,
@@ -28,6 +23,8 @@ import {
 } from "firebase/firestore";
 import { useUser } from "../../UserContext";
 import { MaterialIcons } from "@expo/vector-icons";
+import CommentItem from "../components/CommentItem";
+import FilterIcon from "../components/FilterIcon";
 
 const ToiletDetails = ({ route, navigation }) => {
   const { toilet } = route.params;
@@ -42,14 +39,13 @@ const ToiletDetails = ({ route, navigation }) => {
   );
 
   const getComments = async () => {
-    const q = query(collectionRef, orderBy("timestamp", "desc")); // Tri par ordre croissant
+    const q = query(collectionRef, orderBy("timestamp", "desc"));
     try {
       const collectionDoc = await getDocs(q);
       const data = [];
       collectionDoc.forEach((doc) => {
         data.push({ id: doc.id, ...doc.data() });
       });
-      // Mettre à jour les commentaires dans le state
       setComments(data);
     } catch (error) {
       console.error(error);
@@ -80,59 +76,6 @@ const ToiletDetails = ({ route, navigation }) => {
     }
   };
 
-  const renderCommentsItem = ({ item }) => {
-    const formatDate = (timestamp) => {
-      const now = new Date();
-      const diffInMs = now - new Date(timestamp);
-      const diffInSeconds = Math.floor(diffInMs / 1000);
-      const diffInMinutes = Math.floor(diffInSeconds / 60);
-      const diffInHours = Math.floor(diffInMinutes / 60);
-      const diffInDays = Math.floor(diffInHours / 24);
-
-      if (diffInSeconds < 60) {
-        return `il y a ${diffInSeconds} secondes`;
-      } else if (diffInMinutes < 60) {
-        return `il y a ${diffInMinutes} minutes`;
-      } else if (diffInHours < 24) {
-        return `il y a ${diffInHours} heures`;
-      } else {
-        return `il y a ${diffInDays} jours`;
-      }
-    };
-
-    const date = item.timestamp?.toDate
-      ? item.timestamp.toDate()
-      : new Date(item.timestamp);
-    const formattedDate = formatDate(date);
-
-    return (
-      <View
-        style={{
-          backgroundColor: "#FFEEC6",
-          flex: 1,
-          justifyContent: "space-between",
-          padding: 10,
-          marginBottom: 10,
-          borderRadius: 10,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 1.5 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3,
-        }}
-      >
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ marginBottom: 10, fontWeight: "bold" }}>
-            {item.pseudo}
-          </Text>
-          <Text>{formattedDate}</Text>
-        </View>
-        <View>
-          <Text>{item.content}</Text>
-        </View>
-      </View>
-    );
-  };
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -155,56 +98,15 @@ const ToiletDetails = ({ route, navigation }) => {
           <Text style={styles.toiletName}>{toilet.name}</Text>
         </ImageBackground>
 
-        <View
-          style={[
-            styles.filtersContainer,
-            { backgroundColor: "#FFEEC6", padding: 20, height: 100 },
-          ]}
-        >
-          {toilet.babyZone && (
-            <View style={[styles.filterContainer, styles.activeFilter]}>
-              <Image
-                source={require("../../assets/zone-bebe.png")}
-                style={styles.filterIcon}
-              />
-            </View>
-          )}
-
-          {toilet.squatToilets && (
-            <View style={[styles.filterContainer, styles.activeFilter]}>
-              <Image
-                source={require("../../assets/toilettes-turque.png")}
-                style={styles.filterIcon}
-              />
-            </View>
-          )}
-
-          {toilet.disabledAccess && (
-            <View style={[styles.filterContainer, styles.activeFilter]}>
-              <Image
-                source={require("../../assets/handicape.png")}
-                style={styles.filterIcon}
-              />
-            </View>
-          )}
-
-          {toilet.free && (
-            <View style={[styles.filterContainer, styles.activeFilter]}>
-              <Image
-                source={require("../../assets/gratuit.png")}
-                style={styles.filterIcon}
-              />
-            </View>
-          )}
+        <View style={[styles.filtersContainer, { backgroundColor: "#FFEEC6", padding: 20, height: 100 }]}>
+          {toilet.babyZone && <FilterIcon iconSource={require("../../assets/zone-bebe.png")} />}
+          {toilet.squatToilets && <FilterIcon iconSource={require("../../assets/toilettes-turque.png")} />}
+          {toilet.disabledAccess && <FilterIcon iconSource={require("../../assets/handicape.png")} />}
+          {toilet.free && <FilterIcon iconSource={require("../../assets/gratuit.png")} />}
         </View>
 
         <View style={styles.infoContainer}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
             <FontAwesome name="map-marker" size={16} color="#219ebc" />
             <Text style={styles.addressText}>{toilet.adress}</Text>
           </View>
@@ -228,11 +130,11 @@ const ToiletDetails = ({ route, navigation }) => {
             <FlatList
               data={comments}
               keyExtractor={(item) => item.id}
-              renderItem={renderCommentsItem}
+              renderItem={({ item }) => <CommentItem item={item} />}
             />
           </View>
         ) : (
-          <View style={{alignItems:'center', justifyContent:'center', flex:1}}>
+          <View style={{ alignItems:'center', justifyContent:'center', flex:1 }}>
             <Text style={{ textAlign: "center" }}>Soit le premier à ajouter un commentaire...</Text>
           </View>
         )}
@@ -288,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    gap: 20,
+    gap : 20,
   },
   filterContainer: {
     width: 43,

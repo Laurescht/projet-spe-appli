@@ -5,11 +5,8 @@ import { useRoute } from '@react-navigation/native';
 import { getDirections } from 'react-native-maps-directions';
 import { useNavigation } from '@react-navigation/native';
 import { getFirestore, collection, getDocs } from '@firebase/firestore';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import ListToilet from './ListToilet';
 import { FontAwesome } from '@expo/vector-icons';
-import Btn from '../components/Btn'
-
+import Btn from '../components/Btn';
 
 const MapScreen = ({ navigation }) => {
   const search = () => {
@@ -30,7 +27,6 @@ const MapScreen = ({ navigation }) => {
         setDirections(directionsResult);
       });
   
-      // Utilisez les coordonnées des marqueurs pour définir la région
       const markerRegion = {
         latitude: markers[0].latitude,
         longitude: markers[0].longitude,
@@ -40,7 +36,6 @@ const MapScreen = ({ navigation }) => {
   
       setMapRegion(markerRegion);
     } else if (markers.length === 1) {
-      // Si un seul marqueur est présent, utilisez ses coordonnées pour définir la région
       const singleMarkerRegion = {
         latitude: markers[0].latitude,
         longitude: markers[0].longitude,
@@ -50,7 +45,6 @@ const MapScreen = ({ navigation }) => {
   
       setMapRegion(singleMarkerRegion);
     } else {
-      // Si aucun marqueur n'est présent, utilisez la région par défaut (Paris)
       const defaultRegion = {
         latitude: 48.8566,
         longitude: 2.3522,
@@ -62,32 +56,21 @@ const MapScreen = ({ navigation }) => {
     }
   }, [markers]);
   
-    useEffect(() => {
-      // Récupérer les données depuis Firebase
-      const fetchToiletData = async () => {
-        try{
-          const db = getFirestore();
-        // const toiletCollection = db.collection('toilettes');
-
+  useEffect(() => {
+    const fetchToiletData = async () => {
+      try {
+        const db = getFirestore();
         const snapshot = await getDocs(collection(db, 'toilettes'));
         const data = snapshot.docs.map((doc) => doc.data());
-  
-        // const toilets = snapshot.docs.map(doc => ({
-        //   id: doc.id,
-        //   ...doc.data(),
-        // }));
-  
         setToiletData(data);
-
-        } catch(error){
-          console.error('Erreur: ', error);
-          throw error;
-        }
+      } catch (error) {
         
-      };
+        throw error;
+      }
+    };
   
-      fetchToiletData();
-    }, []);
+    fetchToiletData();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -97,7 +80,6 @@ const MapScreen = ({ navigation }) => {
           provider={MapView.PROVIDER_GOOGLE}
           region={mapRegion}
         >
-
           {toiletData.map(toilet => (
             <Marker
               key={toilet.id}
@@ -131,13 +113,13 @@ const MapScreen = ({ navigation }) => {
       {!directions && (
         <Text style={styles.loadingText}>Chargement des directions...</Text>
       )}
-          <TouchableOpacity style={styles.retourIconContainer} onPress={search}>
-          <FontAwesome name="arrow-left" size={25} color="#219ebc" marginTop={15}/>
-          </TouchableOpacity>
-          <Btn btnAction={{ routeName: "ListToilet", additionalProps: { toiletData: toiletData}}} btnText="Voir en liste" btnStyle={{position: 'absolute', top: 70, marginLeft: 90 }}/>
+      <TouchableOpacity style={styles.retourIconContainer} onPress={search}>
+        <FontAwesome name="arrow-left" size={25} color="#219ebc" marginTop={15}/>
+      </TouchableOpacity>
+      <Btn btnAction={{ routeName: "ListToilet", additionalProps: { toiletData: toiletData }}} btnText="Voir en liste" btnStyle={{ position: 'absolute', top: 70, marginLeft: 90 }}/>
     </View>
   );
-      };  
+};  
 
 const styles = StyleSheet.create({
   container: {

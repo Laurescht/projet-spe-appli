@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Platform,
-  PermissionsAndroid,
   StatusBar,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -71,7 +70,7 @@ const Search = () => {
   }, 100);
 
   const handleChangeLanguage = () => {
-    console.log("Changer la langue");
+
   };
 
   const navigateToProfile = () => {

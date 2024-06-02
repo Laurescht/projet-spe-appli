@@ -7,7 +7,6 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
   Image,
@@ -16,7 +15,6 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Keyboard,
-  Animated,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Fond from "../../assets/Fond.png";
@@ -26,7 +24,6 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { useUser } from "../../UserContext";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../FirebaseConfig";
-// import {BlurView} from "@react-native-community/blur";
 
 const Login = ({ mode }) => {
   const { user, updateUser } = useUser();
@@ -45,21 +42,15 @@ const Login = ({ mode }) => {
       const userDocSnapshot = await getDoc(userDoc);
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
-        // Mise à jour du contexte utilisateur avec les détails récupérés
         updateUser({
           uid: uid,
           pseudo: userData.pseudo,
           email: email,
           imageURL: userData.imageURL || "",
         });
-      } else {
-        console.log("Le document utilisateur n'existe pas dans Firestore.");
       }
     } catch (error) {
-      console.log(
-        "Erreur lors de la récupération des détails utilisateur depuis Firestore:",
-        error
-      );
+      alert("Erreur lors de la récupération des détails utilisateur depuis Firestore: " + error.message);
     }
   };
 
@@ -85,7 +76,7 @@ const Login = ({ mode }) => {
   }, []);
 
   const handleChangeLanguage = () => {
-    console.log("Changer la langue");
+    
   };
 
   const signIn = async () => {
@@ -93,8 +84,6 @@ const Login = ({ mode }) => {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
       await getUserDetailsFromFirestore(response.user.uid);
-
-      //navigation.navigate("Search", { email });
     } catch (error) {
       alert("La connexion a échoué : " + error.message);
     } finally {

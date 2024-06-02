@@ -17,7 +17,7 @@ const Home = () => {
   const navigation = useNavigation();
 
   const handleChangeLanguage = () => {
-    console.log("Changer la langue");
+    
   };
 
   return (

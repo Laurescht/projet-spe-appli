@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   Platform,
   KeyboardAvoidingView,
-  Keyboard,
   Image,
 } from "react-native";
 import Fond from "../../assets/Fond.png";
@@ -54,7 +53,7 @@ const Profil = ({ route, navigation }) => {
         </View>
       </KeyboardAvoidingView>
       <View>
-        <TouchableOpacity style={{justifyContent:"center", alignItems: "center", marginBottom:100}}>
+        <TouchableOpacity style={{ justifyContent: "center", alignItems: "center", marginBottom: 100 }}>
           <Btn
             btnAction={handleLogout}
             btnText="Déconnexion"
